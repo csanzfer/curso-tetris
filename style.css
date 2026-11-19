@@ -9,10 +9,23 @@ body {
   color: #e0e0e0;
   font-family: system-ui, -apple-system, sans-serif;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 24px;
   min-height: 100vh;
   user-select: none;
+}
+
+/* ---- Título ---- */
+.title {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: 12px;
+  padding-left: 12px; /* compensa el letter-spacing final para centrar ópticamente */
+  color: #7aa2f7;
+  text-shadow: 0 0 18px rgba(122, 162, 247, 0.45);
 }
 
 .wrapper {
