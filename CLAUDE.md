@@ -13,14 +13,15 @@ There is no build step, package manager, linter, or test suite. Nothing needs to
 
 The game is three plain files with no modules and no bundler:
 
-- `index.html` defines the DOM: a 300×600 `<canvas id="board">` for the playfield, a 120×120 `<canvas id="next-canvas">` for the preview, HUD spans (`score`, `lines`, `level`), and the pause/game-over overlay. `game.js` is loaded at the end of `<body>` as a classic script.
+- `index.html` defines the DOM: a 300×600 `<canvas id="board">` for the playfield, a 120×120 `<canvas id="next-canvas">` for the preview, HUD spans (`score`, `lines`, `level`, `status` for the freeze countdown), a special-pieces legend, and the pause/game-over overlay. `game.js` is loaded at the end of `<body>` as a classic script.
 - `style.css` is the dark theme. It has no layout logic that the JS depends on.
 - `game.js` holds all game logic in top-level globals (`board`, `current`, `next`, `score`, `lines`, `level`, `paused`, `gameOver`, `dropInterval`, `dropAccum`, `lastTime`, `animId`). It runs in strict mode and calls `init()` at the bottom.
 
 Key relationships inside `game.js` that span multiple functions:
 
-- **Piece type doubles as color index.** `PIECES[t]` and `COLORS[t]` are aligned for `t` in 1–7, and the board stores `t` (0 = empty). Adding or reordering a piece means keeping both arrays in sync.
-- **Lock sequence.** `lockPiece()` = `merge()` → `clearLines()` → `spawn()`. `spawn()` promotes `next` to `current`, rolls a new `next`, and calls `endGame()` if the new piece collides. `endGame()` cancels the animation frame, so the loop stops there.
+- **Piece type doubles as color index.** `PIECES[t]` and `COLORS[t]` are aligned for `t` in 1–14, and the board stores `t` (0 = empty). Types 1–8 are standard/ring pieces; `WILD = 9` exists only on the board (no piece shape); `BOMB`..`FREEZE` (10–14) are 1×1 special pieces. Adding or reordering a piece means keeping both arrays in sync.
+- **Special pieces.** Every `SPECIAL_EVERY` (5) lines, `clearLines()` sets `pendingSpecial`, and the next `randomPiece()` returns a random entry of `SPECIALS`. `lockPiece()` calls `applyEffect(current)` instead of `merge()` for these types. `freezeLeft` (ms) makes `loop()` skip gravity while > 0. `specialsGiven`, `pendingSpecial`, and `freezeLeft` are reset in `init()`.
+- **Lock sequence.** `lockPiece()` = `merge()` (or `applyEffect()` for specials) → `clearLines()` → `spawn()`. `spawn()` promotes `next` to `current`, rolls a new `next`, and calls `endGame()` if the new piece collides. `endGame()` cancels the animation frame, so the loop stops there.
 - **Gravity loop.** `loop(ts)` accumulates `dt` into `dropAccum` and moves the piece down one row when it reaches `dropInterval`, otherwise calling `lockPiece()`. `draw()` clears and redraws the whole canvas every frame; there is no dirty tracking.
 - **Speed and score both live in `clearLines()`.** It updates `lines`, adds `LINE_SCORES[n] * level`, then recomputes `level` and `dropInterval`. The score uses the level from before the update.
 - **Pause and resume.** `togglePause()` cancels the frame loop on pause and calls `loop()` directly on resume. Only `P` works while paused or after game over; other keys are ignored there.

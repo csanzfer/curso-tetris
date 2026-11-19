@@ -42,7 +42,24 @@ Es una versión jugable del Tetris clásico con todas las mecánicas que esperar
 - **Vista previa** de la siguiente pieza.
 - **Sistema de puntuación** clásico de Tetris (100 / 300 / 500 / 800 multiplicado por nivel).
 - **Niveles** que aumentan cada 10 líneas y aceleran la caída.
+- **Piezas especiales**: cada 5 líneas aparece una pieza con efecto al bloquearse (ver [Piezas especiales](#piezas-especiales)).
 - **Pausa** y **Game Over** con opción de reinicio.
+
+---
+
+## Piezas especiales
+
+Cada 5 líneas eliminadas, la siguiente pieza es una especial elegida al azar. Su efecto se aplica en el punto donde aterriza al bloquearse, y no deja bloque en el tablero:
+
+| Pieza        | Efecto                                                                 |
+| ------------ | ---------------------------------------------------------------------- |
+| 💣 Bomba     | Destruye un área de 3 × 3 centrada en el punto de aterrizaje.          |
+| ⚡ Rayo      | Limpia una fila o una columna completa (elegida al azar).              |
+| 🎨 Tinte     | Convierte en **comodines** todos los bloques del color más abundante.  |
+| ⬇ Gravedad  | Hace caer los bloques de cada columna para eliminar huecos.            |
+| ❄ Congelar  | Pausa la caída durante 5 segundos (puedes seguir moviendo la pieza).   |
+
+Los **comodines** (arcoíris) cuentan como cualquier bloque para completar líneas y suman 50 puntos extra cada uno dentro de una línea eliminada.
 
 ---
 
